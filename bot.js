@@ -1,27 +1,36 @@
 import ethers from 'ethers';
 import express from 'express';
 import chalk from 'chalk';
+import * as fs from 'fs';
+
 
 const app = express();
 
+const { privatekey } = JSON.parse(fs.readFileSync(".secret").toString().trim());
+
 const data = {
-  WBNB: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c', //wbnb 
-  to_PURCHASE: '0xe9e7cea3dedca5984780bafc599bd69add087d56',  // token to purchase = BUSD for test
-  factory: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',  //PancakeSwap V2 factory
-  router: '0x10ED43C718714eb63d5aA57B78B54704E256024E', //PancakeSwap V2 router
-  recipient: '', //wallet address,
-  AMOUNT_OF_WBNB : '0.0002',
+  WBNB: '0x1133daa3553a5f29bb2838C9ddfE38D1E1c592E9', //wbnb
+  to_PURCHASE: '0xCe420292B9Db4f6a7e46D2144A81B332F9B0D8BC',  // token to purchase = BUSD for test
+  factory: '0x4fcEd72290D3337b20F214b2De6dd4974bB75Af2',  //PancakeSwap V2 factory
+  router: '0xcd147E2C00f7262067145CF196d39545aed4015E', //PancakeSwap V2 router
+  recipient: '0xbED1440D52544C0143810AA039981F3fF5B35f4F', //wallet address,
+  AMOUNT_OF_WBNB : '0.01',
   Slippage : '3', //in Percentage
-  gasPrice : '5', //in gwei
-  gasLimit : '345684' //at least 21000
+  gasPrice : '10', //in gwei
+  gasLimit : '200000' //at least 21000
 }
 
 let initialLiquidityDetected = false;
+console.log('privatekey',privatekey)
+// Connect a wallet to mainnet
+const bscTestnetUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545'
+let provider = new ethers.providers.JsonRpcProvider(bscTestnetUrl);
+// let walletWithProvider = new ethers.Wallet(privatekey);
+let wallet = new ethers.Wallet(privatekey);
 
 const bscMainnetUrl = 'https://bsc-dataseed.binance.org/'
 const mnemonic = '';
-const provider = new ethers.providers.JsonRpcProvider(bscMainnetUrl)
-const wallet = ethers.Wallet.fromMnemonic(mnemonic);
+// const wallet = ethers.Wallet.fromMnemonic(mnemonic);
 const account = wallet.connect(provider);
 
 const factory = new ethers.Contract(
